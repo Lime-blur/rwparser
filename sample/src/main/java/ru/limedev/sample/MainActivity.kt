@@ -2,7 +2,6 @@ package ru.limedev.sample
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import ru.limedev.rwparser.ModelParser
 import ru.limedev.sample.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
