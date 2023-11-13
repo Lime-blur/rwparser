@@ -45,5 +45,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     // rwparser
-    implementation 'com.github.Lime-blur:rwparser:1.0.2'
+    implementation project(path: ':rwparser')
 }
