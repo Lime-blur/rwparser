@@ -1,5 +1,5 @@
 # rwparser
-**rwparser** is Android library for parsing RenderWare dff and txd models of Grand Theft Auto. 
+**rwparser** is an android library for parsing RenderWare dff and txd models of Grand Theft Auto. 
 ## Gradle Dependency
 Add this dependency to your module's `build.gradle` file:
 
