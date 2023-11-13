@@ -9,7 +9,7 @@
 using namespace std;
 using namespace rw;
 
-extern "C" jint Java_ru_limedev_rwparser_ModelParser_putDffDumpIntoFile(
+extern "C" jint Java_ru_limedev_rwparser_ModelParser_putDffDumpIntoFileNative(
 	JNIEnv* env,
 	jobject,
 	jstring jInFilePath,
@@ -38,7 +38,7 @@ extern "C" jint Java_ru_limedev_rwparser_ModelParser_putDffDumpIntoFile(
 	return 0;
 }
 
-extern "C" jint Java_ru_limedev_rwparser_ModelParser_putTxdDumpIntoFile(
+extern "C" jint Java_ru_limedev_rwparser_ModelParser_putTxdDumpIntoFileNative(
     JNIEnv* env,
     jobject,
     jstring jInFilePath,

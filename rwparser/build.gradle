@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.github.Lime-blur'
-version = '1.0.0'
+version = '1.0.2'
 
 android {
     namespace 'ru.limedev.rwparser'
@@ -50,7 +50,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.Lime-blur'
                 artifactId = 'rwparser'
-                version = '1.0.0'
+                version = '1.0.2'
             }
         }
     }
