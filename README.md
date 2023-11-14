@@ -10,6 +10,18 @@ dependencies {
 }
 ```
 
+Add it in your root build.gradle at the end of repositories (or in settings.gradle):
+
+```gradle
+dependencyResolutionManagement {
+  repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+  repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+  }
+}
+```
+
 ## Usage
 In order to parse a `.dff` file, you simply need to create a `ModelParser()` object and call the appropriate method:
 
