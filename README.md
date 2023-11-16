@@ -38,3 +38,7 @@ modelParser.putTxdDumpIntoFile(inFilePath, outFilePath)
 ```
 
 See the sample application, where an example of using the library is implemented: https://github.com/Lime-blur/rwparser/tree/main/sample
+
+## Rights
+- rwtools: https://github.com/aap/rwtools
+- dff_converter: https://github.com/SimoSbara/dff_converter
