@@ -27,7 +27,7 @@ In order to parse a `.dff` file, you simply need to create a `ModelParser()` obj
 
 ```kotlin
 val modelParser = ModelParser()
-modelParser.putDffDumpIntoFile(inFilePath, outFilePath)
+modelParser.putDffDumpIntoFile(inFilePath, outFilePath, true)
 ```
 
 Same for `.txd` file:
