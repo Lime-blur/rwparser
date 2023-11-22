@@ -13,7 +13,8 @@ extern "C" jint Java_ru_limedev_rwparser_ModelParser_putDffDumpIntoFileNative(
 	JNIEnv* env,
 	jobject,
 	jstring jInFilePath,
-	jstring jOutFilePath
+	jstring jOutFilePath,
+	jboolean jIsDetailedDump
 ) {
 	HeaderInfo header{};
 	char *inFile = jniutils::to_char_ptr(env, jInFilePath);
@@ -26,7 +27,7 @@ extern "C" jint Java_ru_limedev_rwparser_ModelParser_putDffDumpIntoFileNative(
 			in.seekg(-12, ios::cur);
 			auto *clump = new Clump;
 			clump->read(in);
-			dump += clump->getDump(true);
+			dump += clump->getDump((bool) (jIsDetailedDump == JNI_TRUE));
 			delete clump;
 		}
 	}
@@ -66,3 +67,21 @@ extern "C" jint Java_ru_limedev_rwparser_ModelParser_putTxdDumpIntoFileNative(
     out.close();
     return 0;
 }
+
+//extern "C" jint Java_ru_limedev_rwparser_ModelParser_convertDffToGltfNative(
+//    JNIEnv* env,
+//    jobject,
+//    jstring jInFilePath,
+//    jstring jOutFilePath
+//) {
+//    ConverterGLTF converter;
+//    char *inFile = jniutils::to_char_ptr(env, jInFilePath);
+//    char *outFile = jniutils::to_char_ptr(env, jOutFilePath);
+//    ifstream in(inFile, ios::binary);
+//    if (!utils::isStreamFailed(env, in, jInFilePath)) return -1;
+//    rw::Clump clump;
+//    clump.read(in);
+//    converter.convert(outFile, clump);
+//    in.close();
+//    return 0;
+//}
