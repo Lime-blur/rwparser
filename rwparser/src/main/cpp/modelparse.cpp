@@ -13,7 +13,8 @@ extern "C" jint Java_ru_limedev_rwparser_ModelParser_putDffDumpIntoFileNative(
 	JNIEnv* env,
 	jobject,
 	jstring jInFilePath,
-	jstring jOutFilePath
+	jstring jOutFilePath,
+	jboolean jIsDetailedDump
 ) {
 	HeaderInfo header{};
 	char *inFile = jniutils::to_char_ptr(env, jInFilePath);
@@ -26,7 +27,7 @@ extern "C" jint Java_ru_limedev_rwparser_ModelParser_putDffDumpIntoFileNative(
 			in.seekg(-12, ios::cur);
 			auto *clump = new Clump;
 			clump->read(in);
-			dump += clump->getDump(true);
+			dump += clump->getDump((bool) (jIsDetailedDump == JNI_TRUE));
 			delete clump;
 		}
 	}

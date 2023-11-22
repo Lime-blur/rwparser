@@ -14,6 +14,7 @@ import java.io.File
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private var currentOperation: ParseOperation? = null
 
     private var resultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -23,7 +24,22 @@ class MainActivity : AppCompatActivity() {
             val fileName = uri?.getName(this)
             val fileExtension = uri?.getExtension(this)
             val documentsFile = uri?.toInternalDocumentsFile(this, fileName)
-            parse(fileName, fileExtension, documentsFile)
+            when (currentOperation) {
+                ParseOperation.PARSE -> parse(
+                    fileName = fileName,
+                    fileExtension = fileExtension,
+                    documentsFile = documentsFile,
+                    detailed = true
+                )
+                ParseOperation.SHORT_PARSE -> parse(
+                    fileName = fileName,
+                    fileExtension = fileExtension,
+                    documentsFile = documentsFile,
+                    detailed = false
+                )
+                else -> Unit
+            }
+            currentOperation = null
             documentsFile?.delete()
         }
     }
@@ -32,7 +48,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.button.setOnClickListener { handleOpeningFile() }
+        binding.button.setOnClickListener {
+            currentOperation = ParseOperation.PARSE
+            handleOpeningFile()
+        }
+        binding.button2.setOnClickListener {
+            currentOperation = ParseOperation.SHORT_PARSE
+            handleOpeningFile()
+        }
     }
 
     private fun handleOpeningFile() {
@@ -40,13 +63,18 @@ class MainActivity : AppCompatActivity() {
         resultLauncher.launch(intent)
     }
 
-    private fun parse(fileName: String?, fileExtension: String?, documentsFile: File?) {
+    private fun parse(
+        fileName: String?,
+        fileExtension: String?,
+        documentsFile: File?,
+        detailed: Boolean
+    ) {
         if (fileName == null || fileExtension == null || documentsFile == null) return
         val inFilePath = getInternalDocumentsFilePath(fileName) ?: return
         val outFilePath = getInternalDocumentsFilePath("result.txt") ?: return
         val modelParser = ModelParser()
         val parseResult = when (fileExtension) {
-            ".dff" -> modelParser.putDffDumpIntoFile(inFilePath, outFilePath)
+            ".dff" -> modelParser.putDffDumpIntoFile(inFilePath, outFilePath, detailed)
             ".txd" -> modelParser.putTxdDumpIntoFile(inFilePath, outFilePath)
             else -> ParseResult.ERROR
         }
