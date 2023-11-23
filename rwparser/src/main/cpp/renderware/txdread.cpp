@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <fstream>
 #include "renderware.h"
+#include "../utils/jlogs.h"
 
 using namespace std;
 
@@ -286,7 +287,7 @@ namespace rw {
             }
             paletteSize = (rasterFormat & RASTER_PAL8) ? 0x100 : 0x10;
             palette = new uint8[paletteSize * 4];
-            rw.read(reinterpret_cast <char *> (palette),paletteSize * 4 * sizeof(uint8));
+            rw.read(reinterpret_cast <char *> (palette), paletteSize * 4 * sizeof(uint8));
             if (unkh2 == 8 && unkh3 == 3 && unkh4 == 6) rw.seekg(0x20, ios::cur);
         }
         rasterFormat &= 0xff00;

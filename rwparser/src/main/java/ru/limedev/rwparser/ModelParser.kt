@@ -1,5 +1,7 @@
 package ru.limedev.rwparser
 
+import android.util.Log
+
 class ModelParser {
 
     /**
@@ -19,6 +21,7 @@ class ModelParser {
             val parseResult = putDffDumpIntoFileNative(jInFilePath, jOutFilePath, jIsDetailedDump)
             if (parseResult == 0) ParseResult.SUCCESS else ParseResult.ERROR
         } catch (e: Exception) {
+            Log.e("ModelParser", e.toString())
             ParseResult.ERROR
         }
     }
@@ -35,25 +38,27 @@ class ModelParser {
             val parseResult = putTxdDumpIntoFileNative(jInFilePath, jOutFilePath)
             if (parseResult == 0) ParseResult.SUCCESS else ParseResult.ERROR
         } catch (e: Exception) {
+            Log.e("ModelParser", e.toString())
             ParseResult.ERROR
         }
     }
 
-//    /**
-//     * Converts the dff file to gltf file.
-//     * @param jInFilePath dff file
-//     * @param jOutFilePath gltf file
-//     * @return [ParseResult.SUCCESS] - if the operation was successful,
-//     * [ParseResult.ERROR] - if a failure occurred.
-//     */
-//    fun convertDffToGltf(jInFilePath: String, jOutFilePath: String): ParseResult {
-//        return try {
-//            val parseResult = convertDffToGltfNative(jInFilePath, jOutFilePath)
-//            if (parseResult == 0) ParseResult.SUCCESS else ParseResult.ERROR
-//        } catch (e: Exception) {
-//            ParseResult.ERROR
-//        }
-//    }
+    /**
+     * Converts the dff file to gltf file.
+     * @param jInFilePath dff file
+     * @param jOutFilePath gltf file
+     * @return [ParseResult.SUCCESS] - if the operation was successful,
+     * [ParseResult.ERROR] - if a failure occurred.
+     */
+    fun convertDffToGltf(jInFilePath: String, jInFilePath2: String, jOutFilePath: String): ParseResult {
+        return try {
+            val parseResult = convertDffToGltfNative(jInFilePath, jInFilePath2, jOutFilePath)
+            if (parseResult == 0) ParseResult.SUCCESS else ParseResult.ERROR
+        } catch (e: Exception) {
+            Log.e("ModelParser", e.toString())
+            ParseResult.ERROR
+        }
+    }
 
     private external fun putDffDumpIntoFileNative(
         jInFilePath: String,
@@ -63,7 +68,7 @@ class ModelParser {
 
     private external fun putTxdDumpIntoFileNative(jInFilePath: String, jOutFilePath: String): Int
 
-//    private external fun convertDffToGltfNative(jInFilePath: String, jOutFilePath: String): Int
+    private external fun convertDffToGltfNative(jInFilePath: String, jInFilePath2: String, jOutFilePath: String): Int
 
     companion object {
         init { System.loadLibrary("rwparser") }

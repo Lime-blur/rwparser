@@ -37,6 +37,11 @@ class MainActivity : AppCompatActivity() {
                     documentsFile = documentsFile,
                     detailed = false
                 )
+                ParseOperation.CONVERT -> convert(
+                    fileName = fileName,
+                    fileExtension = fileExtension,
+                    documentsFile = documentsFile
+                )
                 else -> Unit
             }
             currentOperation = null
@@ -56,7 +61,10 @@ class MainActivity : AppCompatActivity() {
             currentOperation = ParseOperation.SHORT_PARSE
             handleOpeningFile()
         }
-//        binding.button3.setOnClickListener { handleOpeningFileToConvert() }
+        binding.button3.setOnClickListener {
+            currentOperation = ParseOperation.CONVERT
+            handleOpeningFile()
+        }
     }
 
     private fun handleOpeningFile() {
@@ -82,17 +90,18 @@ class MainActivity : AppCompatActivity() {
         handleParseResult(parseResult, outFilePath)
     }
 
-//    private fun convert(fileName: String?, fileExtension: String?, documentsFile: File?) {
-//        if (fileName == null || fileExtension == null || documentsFile == null) return
-//        val inFilePath = getInternalDocumentsFilePath(fileName) ?: return
-//        val outFilePath = getInternalDocumentsFilePath("result.gltf") ?: return
-//        val modelParser = ModelParser()
-//        val parseResult = when (fileExtension) {
-//            ".dff" -> modelParser.convertDffToGltf(inFilePath, outFilePath)
-//            else -> ParseResult.ERROR
-//        }
-//        handleParseResult(parseResult, outFilePath)
-//    }
+    private fun convert(fileName: String?, fileExtension: String?, documentsFile: File?) {
+        if (fileName == null || fileExtension == null || documentsFile == null) return
+        val inFilePath = getInternalDocumentsFilePath(fileName) ?: return
+        val inFilePath2 = getInternalDocumentsFilePath(fileName)?.dropLast(4) ?: return
+        val outFilePath = getInternalDocumentsFilePath("result.gltf") ?: return
+        val modelParser = ModelParser()
+        val parseResult = when (fileExtension) {
+            ".dff" -> modelParser.convertDffToGltf(inFilePath, "${inFilePath2}.txd", outFilePath)
+            else -> ParseResult.ERROR
+        }
+        handleParseResult(parseResult, outFilePath)
+    }
 
     private fun handleParseResult(parseResult: ParseResult, outFilePath: String) {
         binding.sampleText.text = when (parseResult) {
