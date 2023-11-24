@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.github.Lime-blur'
-version = '1.0.5'
+version = '1.1'
 
 android {
     namespace 'ru.limedev.rwparser'
@@ -43,6 +43,10 @@ android {
     }
 }
 
+dependencies {
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_runtime_ktx_version"
+}
+
 afterEvaluate {
     publishing {
         publications {
@@ -50,7 +54,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.Lime-blur'
                 artifactId = 'rwparser'
-                version = '1.0.5'
+                version = '1.1'
             }
         }
     }
