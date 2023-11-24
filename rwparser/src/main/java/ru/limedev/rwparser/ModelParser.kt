@@ -6,19 +6,19 @@ class ModelParser {
 
     /**
      * Parses the dff file and places the dump in the specified file.
-     * @param jInFilePath dff file
-     * @param jOutFilePath the file to place dff's dump
-     * @param jIsDetailedDump true - for a detailed dump, false - for a non-detailed dump. Default is false
+     * @param inFilePath path to dff file
+     * @param outFilePath path to the file to place dff's dump
+     * @param isDetailedDump true - for a detailed dump, false - for a non-detailed dump. Default is false
      * @return [ParseResult.SUCCESS] - if the operation was successful,
      * [ParseResult.ERROR] - if a failure occurred.
      */
     fun putDffDumpIntoFile(
-        jInFilePath: String,
-        jOutFilePath: String,
-        jIsDetailedDump: Boolean = false
+        inFilePath: String,
+        outFilePath: String,
+        isDetailedDump: Boolean = false
     ): ParseResult {
         return try {
-            val parseResult = putDffDumpIntoFileNative(jInFilePath, jOutFilePath, jIsDetailedDump)
+            val parseResult = putDffDumpIntoFileNative(inFilePath, outFilePath, isDetailedDump)
             if (parseResult == 0) ParseResult.SUCCESS else ParseResult.ERROR
         } catch (e: Exception) {
             Log.e("ModelParser", e.toString())
@@ -28,14 +28,14 @@ class ModelParser {
 
     /**
      * Parses the txd file and places the dump in the specified file.
-     * @param jInFilePath txd file
-     * @param jOutFilePath the file to place txd's dump
+     * @param inFilePath path to txd file
+     * @param outFilePath path to the file to place txd's dump
      * @return [ParseResult.SUCCESS] - if the operation was successful,
      * [ParseResult.ERROR] - if a failure occurred.
      */
-    fun putTxdDumpIntoFile(jInFilePath: String, jOutFilePath: String): ParseResult {
+    fun putTxdDumpIntoFile(inFilePath: String, outFilePath: String): ParseResult {
         return try {
-            val parseResult = putTxdDumpIntoFileNative(jInFilePath, jOutFilePath)
+            val parseResult = putTxdDumpIntoFileNative(inFilePath, outFilePath)
             if (parseResult == 0) ParseResult.SUCCESS else ParseResult.ERROR
         } catch (e: Exception) {
             Log.e("ModelParser", e.toString())
@@ -45,14 +45,23 @@ class ModelParser {
 
     /**
      * Converts the dff file to gltf file.
-     * @param jInFilePath dff file
-     * @param jOutFilePath gltf file
+     * @param inDffFilePath path to dff file
+     * @param outFilePath path to output gltf file
+     * @param inTxdFilePath path to txd file (optional)
      * @return [ParseResult.SUCCESS] - if the operation was successful,
      * [ParseResult.ERROR] - if a failure occurred.
      */
-    fun convertDffToGltf(jInFilePath: String, jInFilePath2: String, jOutFilePath: String): ParseResult {
+    fun convertDffToGltf(
+        inDffFilePath: String,
+        outFilePath: String,
+        inTxdFilePath: String? = null
+    ): ParseResult {
         return try {
-            val parseResult = convertDffToGltfNative(jInFilePath, jInFilePath2, jOutFilePath)
+            val parseResult = if (inTxdFilePath != null) {
+                convertDffWithTxdToGltfNative(inDffFilePath, outFilePath, inTxdFilePath)
+            } else {
+                convertDffToGltfNative(inDffFilePath, outFilePath)
+            }
             if (parseResult == 0) ParseResult.SUCCESS else ParseResult.ERROR
         } catch (e: Exception) {
             Log.e("ModelParser", e.toString())
@@ -68,7 +77,16 @@ class ModelParser {
 
     private external fun putTxdDumpIntoFileNative(jInFilePath: String, jOutFilePath: String): Int
 
-    private external fun convertDffToGltfNative(jInFilePath: String, jInFilePath2: String, jOutFilePath: String): Int
+    private external fun convertDffWithTxdToGltfNative(
+        jInFilePath: String,
+        jOutFilePath: String,
+        jInTxdFilePath: String
+    ): Int
+
+    private external fun convertDffToGltfNative(
+        jInFilePath: String,
+        jOutFilePath: String
+    ): Int
 
     companion object {
         init { System.loadLibrary("rwparser") }

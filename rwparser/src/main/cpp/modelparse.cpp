@@ -69,26 +69,45 @@ extern "C" jint Java_ru_limedev_rwparser_ModelParser_putTxdDumpIntoFileNative(
     return 0;
 }
 
+extern "C" jint Java_ru_limedev_rwparser_ModelParser_convertDffWithTxdToGltfNative(
+    JNIEnv* env,
+    jobject,
+    jstring jInDffFilePath,
+    jstring jOutFilePath,
+    jstring jInTxdFilePath
+) {
+    ConverterGLTF converter;
+    char *inDffFile = jniutils::to_char_ptr(env, jInDffFilePath);
+    char *inTxdFile = jniutils::to_char_ptr(env, jInTxdFilePath);
+    char *outFile = jniutils::to_char_ptr(env, jOutFilePath);
+    ifstream inDff(inDffFile, ios::binary);
+    if (!utils::isStreamFailed(env, inDff, jInDffFilePath)) return -1;
+    ifstream inTxd(inTxdFile, ios::binary);
+    if (!utils::isStreamFailed(env, inTxd, jInTxdFilePath)) return -1;
+    rw::Clump clump;
+    rw::TextureDictionary textureDictionary;
+    clump.read(inDff);
+    textureDictionary.read(inTxd);
+    converter.convert(outFile, clump, textureDictionary);
+    inDff.close();
+    inTxd.close();
+    return 0;
+}
+
 extern "C" jint Java_ru_limedev_rwparser_ModelParser_convertDffToGltfNative(
     JNIEnv* env,
     jobject,
     jstring jInFilePath,
-    jstring jInFilePath2,
     jstring jOutFilePath
 ) {
     ConverterGLTF converter;
     char *inFile = jniutils::to_char_ptr(env, jInFilePath);
-    char *inFile2 = jniutils::to_char_ptr(env, jInFilePath2);
     char *outFile = jniutils::to_char_ptr(env, jOutFilePath);
     ifstream in(inFile, ios::binary);
     if (!utils::isStreamFailed(env, in, jInFilePath)) return -1;
-    ifstream in2(inFile2, ios::binary);
-    if (!utils::isStreamFailed(env, in2, jInFilePath2)) return -1;
     rw::Clump clump;
-    rw::TextureDictionary textureDictionary;
     clump.read(in);
-    textureDictionary.read(in2);
-    converter.convert(outFile, clump, textureDictionary);
+    converter.convert(outFile, clump);
     in.close();
     return 0;
 }
