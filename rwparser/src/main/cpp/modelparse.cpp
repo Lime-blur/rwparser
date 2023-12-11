@@ -69,7 +69,7 @@ extern "C" jint Java_ru_limedev_rwparser_ModelParser_putTxdDumpIntoFileNative(
     return 0;
 }
 
-extern "C" jint Java_ru_limedev_rwparser_ModelParser_convertDffWithTxdToGltfNative(
+extern "C" jboolean Java_ru_limedev_rwparser_ModelParser_convertDffWithTxdToGltfNative(
     JNIEnv* env,
     jobject,
     jstring jInDffFilePath,
@@ -81,9 +81,9 @@ extern "C" jint Java_ru_limedev_rwparser_ModelParser_convertDffWithTxdToGltfNati
     char *inTxdFile = jniutils::to_char_ptr(env, jInTxdFilePath);
     char *outFile = jniutils::to_char_ptr(env, jOutFilePath);
     ifstream inDff(inDffFile, ios::binary);
-    if (!utils::isStreamFailed(env, inDff, jInDffFilePath)) return -1;
+    if (!utils::isStreamFailed(env, inDff, jInDffFilePath)) return false;
     ifstream inTxd(inTxdFile, ios::binary);
-    if (!utils::isStreamFailed(env, inTxd, jInTxdFilePath)) return -1;
+    if (!utils::isStreamFailed(env, inTxd, jInTxdFilePath)) return false;
     rw::Clump clump;
     rw::TextureDictionary textureDictionary;
     clump.read(inDff);
@@ -91,23 +91,31 @@ extern "C" jint Java_ru_limedev_rwparser_ModelParser_convertDffWithTxdToGltfNati
     converter.convert(outFile, clump, textureDictionary);
     inDff.close();
     inTxd.close();
-    return 0;
+    return true;
 }
 
-extern "C" jint Java_ru_limedev_rwparser_ModelParser_convertDffToGltfNative(
+extern "C" jboolean Java_ru_limedev_rwparser_ModelParser_convertDffToGltfNative(
     JNIEnv* env,
     jobject,
     jstring jInFilePath,
     jstring jOutFilePath
 ) {
+    HeaderInfo header{};
     ConverterGLTF converter;
     char *inFile = jniutils::to_char_ptr(env, jInFilePath);
     char *outFile = jniutils::to_char_ptr(env, jOutFilePath);
     ifstream in(inFile, ios::binary);
-    if (!utils::isStreamFailed(env, in, jInFilePath)) return -1;
-    rw::Clump clump;
-    clump.read(in);
-    converter.convert(outFile, clump);
+    if (!utils::isStreamFailed(env, in, jInFilePath)) return false;
+    bool isCorrectFile = true;
+    while (header.read(in) && header.type != CHUNK_NAOBJECT) {
+        if (header.type == CHUNK_CLUMP) {
+            in.seekg(-12, ios::cur);
+            rw::Clump clump;
+            clump.read(in);
+            converter.convert(outFile, clump);
+        }
+    }
+    if (in.peek() == std::ifstream::traits_type::eof()) isCorrectFile = false;
     in.close();
-    return 0;
+    return isCorrectFile;
 }

@@ -87,7 +87,7 @@ class ModelParser {
                     convertDffToGltfNative(inDffFilePath, outFilePath)
                 }
                 withContext(Dispatchers.Main) {
-                    callback.invoke(if (parseResult == 0) ParseResult.SUCCESS else ParseResult.ERROR)
+                    callback.invoke(if (parseResult) ParseResult.SUCCESS else ParseResult.ERROR)
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
@@ -156,7 +156,7 @@ class ModelParser {
             } else {
                 convertDffToGltfNative(inDffFilePath, outFilePath)
             }
-            if (parseResult == 0) ParseResult.SUCCESS else ParseResult.ERROR
+            if (parseResult) ParseResult.SUCCESS else ParseResult.ERROR
         } catch (e: Exception) {
             Log.e(LOCAL_LOG_TAG, e.toString())
             ParseResult.ERROR
@@ -164,7 +164,7 @@ class ModelParser {
     }
 
     /**
-     * Cancels all asynchronous operations. Tie this method to the life cycle of the component in
+     * Cancels all asynchronous operations. Bind this method to the lifecycle of the component in
      * which parsing / conversion operations occur.
      */
     fun destroy() { parseResourcesJob.cancel() }
@@ -177,16 +177,20 @@ class ModelParser {
 
     private external fun putTxdDumpIntoFileNative(jInFilePath: String, jOutFilePath: String): Int
 
+    /**
+     * Unfinished. If you put an empty or broken dff file, it will crash.
+     * Needs to be fixed in version 1.1.3.
+     */
     private external fun convertDffWithTxdToGltfNative(
         jInFilePath: String,
         jOutFilePath: String,
         jInTxdFilePath: String
-    ): Int
+    ): Boolean
 
     private external fun convertDffToGltfNative(
         jInFilePath: String,
         jOutFilePath: String
-    ): Int
+    ): Boolean
 
     companion object {
         init { System.loadLibrary("rwparser") }
