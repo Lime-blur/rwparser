@@ -179,7 +179,7 @@ class ModelParser {
 
     /**
      * Unfinished. If you put an empty or broken dff file, it will crash.
-     * Needs to be fixed in version 1.1.3.
+     * Needs to be fixed in version 1.1.4.
      */
     private external fun convertDffWithTxdToGltfNative(
         jInFilePath: String,

@@ -5,10 +5,16 @@
 #include "renderware/renderware.h"
 #include "utils/utils.cpp"
 #include "utils/jlogs.h"
+#include <sys/stat.h>
 #include <ConverterGLTF.h>
 
 using namespace std;
 using namespace rw;
+
+inline bool exists(const std::string& fileName) {
+    struct stat buffer{};
+    return (stat (fileName.c_str(), &buffer) == 0);
+}
 
 extern "C" jint Java_ru_limedev_rwparser_ModelParser_putDffDumpIntoFileNative(
 	JNIEnv* env,
@@ -115,7 +121,7 @@ extern "C" jboolean Java_ru_limedev_rwparser_ModelParser_convertDffToGltfNative(
             converter.convert(outFile, clump);
         }
     }
-    if (in.peek() == std::ifstream::traits_type::eof()) isCorrectFile = false;
     in.close();
+    if (!exists(outFile)) isCorrectFile = false;
     return isCorrectFile;
 }
