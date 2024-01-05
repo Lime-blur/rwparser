@@ -80,7 +80,10 @@ extern "C" jboolean Java_ru_limedev_rwparser_ModelParser_convertDffWithTxdToGltf
     jobject,
     jstring jInDffFilePath,
     jstring jOutFilePath,
-    jstring jInTxdFilePath
+    jstring jInTxdFilePath,
+    jint jRx,
+    jint jRy,
+    jint jRz
 ) {
     ConverterGLTF converter;
     char *inDffFile = jniutils::to_char_ptr(env, jInDffFilePath);
@@ -94,6 +97,7 @@ extern "C" jboolean Java_ru_limedev_rwparser_ModelParser_convertDffWithTxdToGltf
     rw::TextureDictionary textureDictionary;
     clump.read(inDff);
     textureDictionary.read(inTxd);
+    converter.setRotation(jRx, jRy, jRz);
     converter.convert(outFile, clump, textureDictionary);
     inDff.close();
     inTxd.close();
@@ -104,7 +108,10 @@ extern "C" jboolean Java_ru_limedev_rwparser_ModelParser_convertDffToGltfNative(
     JNIEnv* env,
     jobject,
     jstring jInFilePath,
-    jstring jOutFilePath
+    jstring jOutFilePath,
+    jint jRx,
+    jint jRy,
+    jint jRz
 ) {
     HeaderInfo header{};
     ConverterGLTF converter;
@@ -118,6 +125,7 @@ extern "C" jboolean Java_ru_limedev_rwparser_ModelParser_convertDffToGltfNative(
             in.seekg(-12, ios::cur);
             rw::Clump clump;
             clump.read(in);
+            converter.setRotation(jRx, jRy, jRz);
             converter.convert(outFile, clump);
         }
     }

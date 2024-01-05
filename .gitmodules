@@ -1,4 +1,4 @@
 [submodule "rwparser/src/main/cpp/dff_converter"]
 	path = rwparser/src/main/cpp/dff_converter
-	url = https://github.com/SimoSbara/dff_converter.git
+	url = https://github.com/Lime-blur/dff_converter_rotation.git
     branch = cross-library
