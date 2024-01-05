@@ -5,7 +5,7 @@ enum class ViewType(val rotationX: Int, val rotationY: Int, val rotationZ: Int) 
     /**
      * Specifies the initial rotation of the object so that the view is directed towards its floor.
      */
-    MODEL_FLOOR(90, 0, 0),
+    MODEL_FLOOR(180, 0, 0),
 
     /**
      * Specifies the initial rotation of the object so that the view is directed towards its roof.
@@ -22,5 +22,5 @@ enum class ViewType(val rotationX: Int, val rotationY: Int, val rotationZ: Int) 
      * Specifies the initial rotation of the object so that the view is directed towards its
      * back end side.
      */
-    MODEL_BACK_END_SIDE(270, 0, 180)
+    MODEL_BACK_END_SIDE(270, 180, 0)
 }
