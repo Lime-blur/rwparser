@@ -96,7 +96,7 @@ The library can also convert `.dff` to `.gltf` format. To convert you need:
 
 ```kotlin
 val modelParser = ModelParser()
-val parseResult = modelParser.convertDffToGltf(inDffFilePath, outFilePath, /* optional */ inTxdFilePath)
+val parseResult = modelParser.convertDffToGltf(inDffFilePath, outFilePath, /* optional */ inTxdFilePath, /* optional */ viewType)
 ```
 
 For asynchronous `.dff`'s converting:
@@ -118,7 +118,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun convert() {
-        modelParser?.convertDffToGltfAsync(dffFilePath, gltfFilePath, /* optional */ txdFilePath) { parseResult ->
+        modelParser?.convertDffToGltfAsync(dffFilePath, gltfFilePath, /* optional */ txdFilePath, /* optional */ viewType) { parseResult ->
             // Handling the callback
         }
     }
