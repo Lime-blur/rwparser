@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include "jniutils.cpp"
+#include <sys/stat.h>
 #include "../exceptions/jexception.cpp"
 
 class utils {
@@ -12,5 +13,10 @@ class utils {
             return false;
         }
         return true;
+    }
+
+    public: static inline bool exists(const std::string& fileName) {
+        struct stat buffer{};
+        return (stat (fileName.c_str(), &buffer) == 0);
     }
 };

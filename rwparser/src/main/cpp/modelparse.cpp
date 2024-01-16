@@ -5,16 +5,9 @@
 #include "renderware/renderware.h"
 #include "utils/utils.cpp"
 #include "utils/jlogs.h"
-#include <sys/stat.h>
-#include <ConverterGLTF.h>
 
 using namespace std;
 using namespace rw;
-
-inline bool exists(const std::string& fileName) {
-    struct stat buffer{};
-    return (stat (fileName.c_str(), &buffer) == 0);
-}
 
 extern "C" jint Java_ru_limedev_rwparser_ModelParser_putDffDumpIntoFileNative(
 	JNIEnv* env,
@@ -73,63 +66,4 @@ extern "C" jint Java_ru_limedev_rwparser_ModelParser_putTxdDumpIntoFileNative(
     out << dump;
     out.close();
     return 0;
-}
-
-extern "C" jboolean Java_ru_limedev_rwparser_ModelParser_convertDffWithTxdToGltfNative(
-    JNIEnv* env,
-    jobject,
-    jstring jInDffFilePath,
-    jstring jOutFilePath,
-    jstring jInTxdFilePath,
-    jint jRx,
-    jint jRy,
-    jint jRz
-) {
-    ConverterGLTF converter;
-    char *inDffFile = jniutils::to_char_ptr(env, jInDffFilePath);
-    char *inTxdFile = jniutils::to_char_ptr(env, jInTxdFilePath);
-    char *outFile = jniutils::to_char_ptr(env, jOutFilePath);
-    ifstream inDff(inDffFile, ios::binary);
-    if (!utils::isStreamFailed(env, inDff, jInDffFilePath)) return false;
-    ifstream inTxd(inTxdFile, ios::binary);
-    if (!utils::isStreamFailed(env, inTxd, jInTxdFilePath)) return false;
-    rw::Clump clump;
-    rw::TextureDictionary textureDictionary;
-    clump.read(inDff);
-    textureDictionary.read(inTxd);
-    converter.setRotation(jRx, jRy, jRz);
-    converter.convert(outFile, clump, textureDictionary);
-    inDff.close();
-    inTxd.close();
-    return true;
-}
-
-extern "C" jboolean Java_ru_limedev_rwparser_ModelParser_convertDffToGltfNative(
-    JNIEnv* env,
-    jobject,
-    jstring jInFilePath,
-    jstring jOutFilePath,
-    jint jRx,
-    jint jRy,
-    jint jRz
-) {
-    HeaderInfo header{};
-    ConverterGLTF converter;
-    char *inFile = jniutils::to_char_ptr(env, jInFilePath);
-    char *outFile = jniutils::to_char_ptr(env, jOutFilePath);
-    ifstream in(inFile, ios::binary);
-    if (!utils::isStreamFailed(env, in, jInFilePath)) return false;
-    bool isCorrectFile = true;
-    while (header.read(in) && header.type != CHUNK_NAOBJECT) {
-        if (header.type == CHUNK_CLUMP) {
-            in.seekg(-12, ios::cur);
-            rw::Clump clump;
-            clump.read(in);
-            converter.setRotation(jRx, jRy, jRz);
-            converter.convert(outFile, clump);
-        }
-    }
-    in.close();
-    if (!exists(outFile)) isCorrectFile = false;
-    return isCorrectFile;
 }
