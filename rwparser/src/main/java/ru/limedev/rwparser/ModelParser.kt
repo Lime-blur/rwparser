@@ -207,10 +207,6 @@ class ModelParser {
 
     private external fun putTxdDumpIntoFileNative(jInFilePath: String, jOutFilePath: String): Int
 
-    /**
-     * Unfinished. If you put an empty or broken dff file, it will crash.
-     * Needs to be fixed in version 1.1.5.
-     */
     private external fun convertDffWithTxdToGltfNative(
         jInFilePath: String,
         jOutFilePath: String,
