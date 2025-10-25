@@ -5,15 +5,15 @@ plugins {
 }
 
 group = 'com.github.Lime-blur'
-version = '1.1.5'
+version = '1.1.6'
 
 android {
     namespace 'ru.limedev.rwparser'
-    compileSdk 33
+    compileSdk 36
 
     defaultConfig {
         minSdk 24
-        targetSdk 33
+        targetSdk 36
 
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -41,6 +41,7 @@ android {
     dependencies {
         implementation fileTree(dir: 'libs', include: ["*.jar", "*.aar"])
     }
+    ndkVersion '29.0.14206865'
 }
 
 dependencies {
@@ -54,7 +55,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.Lime-blur'
                 artifactId = 'rwparser'
-                version = '1.1.5'
+                version = '1.1.6'
             }
         }
     }
