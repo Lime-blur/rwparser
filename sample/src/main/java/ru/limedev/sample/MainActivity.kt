@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
     private var parseResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) launcher@ { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
+        if (result.resultCode == RESULT_OK) {
             val uri = result.data?.data
             val fileName = uri?.getName(this) ?: return@launcher
             val fileExtension = uri.getExtension(this) ?: return@launcher
@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
     private var convertDffResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) launcher@ { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
+        if (result.resultCode == RESULT_OK) {
             val uri = result.data?.data
             if (uri?.getExtension(this) != DFF_EXTENSION) return@launcher
             currentDffUri = uri
